@@ -6,9 +6,27 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: docker login -u ${{secrets.DOCKER_UID}} -p ${{secrets.DOCKER_PWD}}
       - run: docker build -t reddynie11/react-prod -f Dockerfile.dev .
       - run: docker run -e CI=true reddynie11/react-prod npm run test
+
+      - name: Generate deploment package
+        run: zip -r deploy.zip . -x '*.git*'
+      
+      - name: deploy to EB
+        uses: reddynie11/react-prod
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS }}
+          aws_secret_key: ${{ secrets.AWS_SECRET }}
+          application_name: frontend
+          enviroment_name: Frontend-env
+          existing_bucket_name: elasticbeanstalk-us-west-2-777080965302
+          region: us-west-2
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
+
+
+      

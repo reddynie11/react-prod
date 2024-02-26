@@ -17,7 +17,7 @@ jobs:
         run: zip -r deploy.zip . -x '*.git*'
       
       - name: deploy to EB
-        uses: reddynie11/react-prod
+        uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS }}
           aws_secret_key: ${{ secrets.AWS_SECRET }}

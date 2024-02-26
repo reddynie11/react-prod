@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
     steps:
       - uses: actions/checkout@v3
       - run: docker login -u ${{secrets.DOCKER_UID}} -p ${{secrets.DOCKER_PWD}}
